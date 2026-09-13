@@ -1,79 +1,79 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HINDI ANIME HUB</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HINDI ANIME HUB</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{background:#0f0f0f;color:#fff;margin:0;font-family:Arial}
+.navbar{display:flex;justify-content:space-between;padding:12px;background:#1a1a1a;position:sticky;top:0}
+.btn-toggle{padding:6px 12px;background:#ff4d5a;border:none;border-radius:6px;color:#fff}
+.admin-panel{background:#1e1e1e;margin:12px;padding:15px;border-radius:12px}
+.hidden{display:none}
+input,select{width:100%;padding:12px;margin:7px 0;background:#2a2a2a;border:1px solid #444;color:#fff;border-radius:8px;box-sizing:border-box}
+.btn-submit{width:100%;padding:12px;background:#ff4d5a;border:none;border-radius:8px;color:#fff;font-weight:700}
+.card{background:#1e1e1e;border-radius:10px;overflow:hidden;min-width:160px}
+.card img{width:100%;height:220px;object-fit:cover}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.h-scroll{display:flex;gap:12px;overflow-x:auto;padding:10px}
+#photoStatus{color:#00ff88;font-size:12px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:99}
+.modal iframe{width:100%;height:90vh}
+</style>
 </head>
 <body>
+<div class="navbar"><b><i class="fa-solid fa-play"></i> HINDI ANIME HUB</b><button id="adminLoginBtn" class="btn-toggle">Admin Panel</button></div>
 
-    <!-- Header Navbar -->
-    <header class="navbar">
-        <div class="nav-left">
-            <i class="fa-solid fa-bars menu-icon"></i>
-            <div class="logo">
-                <i class="fa-solid fa-play"></i> HINDI ANIME HUB
-            </div>
-        </div>
-        <div class="nav-right">
-            <button id="adminLoginBtn" class="btn-toggle"><i class="fa-solid fa-lock"></i> Admin Panel</button>
-        </div>
-    </header>
+<div id="adminSection" class="admin-panel hidden">
+<h3>Boss Admin Control</h3>
+<form id="animeForm">
+<input type="text" id="animeTitle" placeholder="Anime Name" required>
+<label style="font-size:13px;color:#aaa">Poster - Gallery se Select Karo (Expire Nahi Hoga)</label>
+<input type="file" id="animeImgFile" accept="image/*" required>
+<input type="hidden" id="animeImg"><p id="photoStatus"></p>
+<input type="text" id="animeEp" placeholder="Episode Tag" required>
+<input type="text" id="telegramLink" placeholder="YouTube / Drive Link" required>
+<select id="category"><option value="popular">Popular Today</option><option value="latest">Latest Release</option></select>
+<button type="submit" class="btn-submit">Publish Anime</button>
+</form>
+<button onclick="document.getElementById('adminSection').classList.add('hidden')" style="margin-top:10px;background:#333;border:none;color:#fff;padding:8px;border-radius:6px;width:100%">Close</button>
+<div id="adminList" style="margin-top:10px;font-size:12px"></div>
+</div>
 
-    <!-- Secure Admin Panel -->
-    <section id="adminSection" class="admin-panel hidden">
-        <div class="admin-header">
-            <h3><i class="fa-solid fa-user-shield"></i> Boss Admin Control</h3>
-            <button id="logoutBtn" class="btn-logout">Logout</button>
-        </div>
-        
-        <form id="animeForm">
-            <input type="text" id="animeTitle" placeholder="Anime Name (e.g. Demon Slayer)" required>
-            <input type="text" id="animeImg" placeholder="Poster Image URL" required>
-            <input type="text" id="animeEp" placeholder="Episode Tag (e.g. Ep 55 Hindi)" required>
-            <input type="text" id="telegramLink" placeholder="Stream/Embed Video Link" required>
-            <select id="animeType">
-                <option value="TV">TV</option>
-                <option value="MOVIE">MOVIE</option>
-            </select>
-            <select id="category">
-                <option value="popular">Popular Today</option>
-                <option value="latest">Latest Release</option>
-            </select>
-            <button type="submit" class="btn-submit">Publish Anime</button>
-        </form>
-    </section>
+<h3 style="padding:10px">Popular Today</h3><div class="h-scroll" id="popularContainer"></div>
+<h3 style="padding:10px">Latest Release</h3><div class="grid" id="latestContainer"></div>
 
-    <!-- Popular Today Section -->
-    <section class="section-container">
-        <h2 class="section-title">Popular Today</h2>
-        <div class="horizontal-scroll" id="popularContainer"></div>
-    </section>
+<div id="videoModal" class="modal"><div style="display:flex;justify-content:space-between;padding:10px;background:#1a1a1a"><span id="playerTitle"></span><span onclick="closePlayer()" style="font-size:24px;cursor:pointer">&times;</span></div><iframe id="videoPlayer" frameborder="0" allowfullscreen></iframe></div>
 
-    <!-- Latest Release Section -->
-    <section class="section-container">
-        <div class="section-header">
-            <h2 class="section-title">Latest Release</h2>
-            <a href="#" class="view-all">VIEW ALL</a>
-        </div>
-        <div class="grid-container" id="latestContainer"></div>
-    </section>
-
-    <!-- Crunchyroll Style Video Player Modal -->
-    <div id="videoModal" class="video-modal">
-        <div class="video-content">
-            <div class="modal-header">
-                <h3 id="playerTitle">Anime Player</h3>
-                <span class="close-btn" onclick="closePlayer()">&times;</span>
-            </div>
-            <div class="iframe-container">
-                <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+<script>
+let animes = JSON.parse(localStorage.getItem('hindiAnimeFinal_v2') || '[]');
+document.getElementById('animeImgFile').addEventListener('change', function(e){
+  let file=e.target.files[0]; if(!file) return;
+  let reader=new FileReader();
+  reader.onload=function(){document.getElementById('animeImg').value=reader.result; document.getElementById('photoStatus').innerText="✅ Photo Lock Ho Gaya!";}
+  reader.readAsDataURL(file);
+});
+document.getElementById('adminLoginBtn').onclick=()=>document.getElementById('adminSection').classList.toggle('hidden');
+document.getElementById('animeForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  let title=document.getElementById('animeTitle').value, img=document.getElementById('animeImg').value, ep=document.getElementById('animeEp').value, video=document.getElementById('telegramLink').value, cat=document.getElementById('category').value;
+  if(!img){alert('Photo select karo');return;}
+  if(video.includes('watch?v=')){let id=video.split('v=')[1].split('&')[0]; video=`https://www.youtube-nocookie.com/embed/${id}?modestbranding=1&rel=0`;}
+  animes.push({id:Date.now(), title, img, ep, video, cat});
+  localStorage.setItem('hindiAnimeFinal_v2', JSON.stringify(animes));
+  render(); this.reset(); document.getElementById('photoStatus').innerText=""; alert('Publish Ho Gaya!');
+});
+function render(){
+  popularContainer.innerHTML=''; latestContainer.innerHTML='';
+  animes.forEach(a=>{
+    let card=`<div class="card" onclick="openPlayer('${a.video}','${a.title}')"><img src="${a.img}"><p>${a.title}<br><small>${a.ep}</small></p></div>`;
+    if(a.cat==='popular') popularContainer.innerHTML+=card; else latestContainer.innerHTML+=card;
+  });
+}
+function openPlayer(l,t){videoPlayer.src=l; playerTitle.innerText=t; videoModal.style.display='block';}
+function closePlayer(){videoModal.style.display='none'; videoPlayer.src='';}
+render();
+</script>
 </body>
 </html>
