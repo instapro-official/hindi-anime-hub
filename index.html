@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hindi Anime Hub</title>
+    <title>HINDI ANIME HUB</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -33,7 +33,7 @@
             <input type="text" id="animeTitle" placeholder="Anime Name (e.g. Demon Slayer)" required>
             <input type="text" id="animeImg" placeholder="Poster Image URL" required>
             <input type="text" id="animeEp" placeholder="Episode Tag (e.g. Ep 55 Hindi)" required>
-            <input type="text" id="telegramLink" placeholder="Telegram Post Link" required>
+            <input type="text" id="telegramLink" placeholder="Stream/Embed Video Link" required>
             <select id="animeType">
                 <option value="TV">TV</option>
                 <option value="MOVIE">MOVIE</option>
@@ -60,6 +60,19 @@
         </div>
         <div class="grid-container" id="latestContainer"></div>
     </section>
+
+    <!-- Crunchyroll Style Video Player Modal -->
+    <div id="videoModal" class="video-modal">
+        <div class="video-content">
+            <div class="modal-header">
+                <h3 id="playerTitle">Anime Player</h3>
+                <span class="close-btn" onclick="closePlayer()">&times;</span>
+            </div>
+            <div class="iframe-container">
+                <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
