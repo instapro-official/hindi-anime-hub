@@ -1,66 +1,22 @@
 <!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hindi Anime Hub - Watch Anime in Hindi</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#0a0a0f;color:white}
-header{padding:15px;background:#161622;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.logo{font-size:22px;font-weight:800;color:#ff2e63}
-.logo span{color:white}
-.search{padding:8px 12px;border-radius:20px;border:none;width:55%;background:#22223a;color:white}
-.hero{padding:30px 15px;background:linear-gradient(135deg,#ff2e63,#8a2be2);text-align:center}
-.hero h1{font-size:28px;margin-bottom:10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px}
-.card{background:#161622;border-radius:12px;overflow:hidden}
-.card img{width:100%;height:180px;object-fit:cover}
-.card-body{padding:10px}
-.card-body h3{font-size:14px;margin-bottom:4px}
-.tag{font-size:11px;background:#ff2e63;padding:2px 6px;border-radius:10px}
-.btn{width:100%;margin-top:8px;padding:7px;border:none;border-radius:8px;background:#6c5ce7;color:white;font-weight:600}
-footer{text-align:center;padding:20px;color:#888;font-size:12px}
-</style>
-</head>
-<body>
-<header>
-<div class="logo">HINDI<span>ANIMEHUB</span></div>
-<input class="search" placeholder="Search anime...">
-</header>
-<div class="hero">
-<h1>Anime Dekho Hindi Me 🇮🇳</h1>
-<p>Top Hindi Dubbed Anime - Free & HD</p>
-</div>
-<div class="grid">
-<div class="card">
-<img src="https://i.ibb.co/3Y8vJ3y/naruto.jpg" onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400'">
-<div class="card-body">
-<h3>Naruto - Hindi Dub</h3><span class="tag">HINDI</span><span class="tag" style="background:#222">220 EP</span>
-<button class="btn" onclick="alert('Player jaldi ayega! Telegram pe update milega')">▶ Watch Now</button>
-</div></div>
-<div class="card">
-<img src="https://images.unsplash.com/photo-1608346128025-1896b97a6fa7?w=400">
-<div class="card-body">
-<h3>Demon Slayer Hindi</h3><span class="tag">HINDI</span><span class="tag" style="background:#222">55 EP</span>
-<button class="btn" onclick="alert('Player jaldi ayega!')">▶ Watch Now</button>
-</div></div>
-<div class="card">
-<img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=400">
-<div class="card-body">
-<h3>One Piece Hindi</h3><span class="tag">NEW</span>
-<button class="btn">▶ Watch Now</button>
-</div></div>
-<div class="card">
-<img src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586?w=400">
-<div class="card-body">
-<h3>Attack on Titan Hindi</h3><span class="tag">HINDI</span>
-<button class="btn">▶ Watch Now</button>
-</div></div>
-</div>
-<footer>
-Made with ❤️ by Bishal | instapro-official.github.io/hindi-anime-hub
-<br><br>Next: Telegram bot connect karenge
-</footer>
-</body>
-</html>
+<html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hindi Anime Hub - Official</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#0a0a0f;color:#fff}header{padding:12px 15px;background:#111122;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:99}.logo{font-weight:900;font-size:20px;color:#ff2e63;flex-shrink:0}.logo span{color:#fff}.search{flex:1;padding:10px 14px;border-radius:25px;border:none;background:#1e1e36;color:#fff;outline:none}.hero{padding:35px 15px;background:linear-gradient(90deg,#ff2e63,#7c3aed);text-align:center}.hero h1{font-size:26px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}.card{background:#151528;border-radius:14px;overflow:hidden;border:1px solid #222}.card img{width:100%;height:200px;object-fit:cover}.cb{padding:10px}.cb h3{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tag{display:inline-block;margin-top:6px;font-size:10px;background:#ff2e63;padding:3px 7px;border-radius:20px}.btn{width:100%;margin-top:8px;padding:9px;border:none;border-radius:10px;background:#6d5df6;color:#fff;font-weight:700}.modal{display:none;position:fixed;inset:0;background:#000000ee;z-index:999;padding:15px}.modal-box{background:#1a1a2e;border-radius:16px;padding:15px;max-width:500px;margin:40px auto}.close{float:right;font-size:24px;cursor:pointer} iframe{width:100%;height:220px;border-radius:10px;border:none;background:#000;margin-top:10px}</style></head><body>
+<header><div class="logo">HINDI<span>ANIMEHUB</span></div><input class="search" id="search" placeholder="Search Naruto, Demon Slayer..." oninput="search()"></header>
+<div class="hero"><h1>Anime Dekho Hindi Me 🇮🇳</h1><p>100% Hindi Dubbed - Daily Update</p></div>
+<div class="grid" id="grid"></div>
+<div class="modal" id="modal"><div class="modal-box"><span class="close" onclick="modal.style.display='none'">✕</span><h2 id="mTitle"></h2><p style="color:#aaa;font-size:12px;margin-top:5px">Hindi Dubbed • HD • No Ads</p><iframe id="player" allowfullscreen></iframe><button class="btn" style="background:#ff2e63" onclick="alert('Telegram pe full episodes hai! Link bio me')">📥 Download in Hindi</button><p style="text-align:center;color:#777;font-size:11px;margin-top:10px">Made by Bishal</p></div></div>
+<script>
+const animes=[
+{t:"Naruto - Hindi Dub",ep:"220 EP",img:"https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500",yt:"https://www.youtube.com/embed/QczGoCmX-pI"},
+{t:"Demon Slayer Hindi",ep:"55 EP",img:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500",yt:"https://www.youtube.com/embed/x7uL2GblIo0"},
+{t:"One Piece Hindi",ep:"NEW",img:"https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=500",yt:"https://www.youtube.com/embed/S8_YwFLCh4U"},
+{t:"Attack on Titan Hindi",ep:"HINDI",img:"https://images.unsplash.com/photo-1578632292335-df3abbb0d586?w=500",yt:"https://www.youtube.com/embed/MGRm4IzK1SQ"},
+{t:"Jujutsu Kaisen Hindi",ep:"48 EP",img:"https://images.unsplash.com/photo-1608346128025-1896b97a6fa7?w=500",yt:"https://www.youtube.com/embed/pkKu9hLT-t8"},
+{t:"Dragon Ball Z Hindi",ep:"100 EP",img:"https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?w=500",yt:"https://www.youtube.com/embed/sxufB6xAQfk"}
+];
+const grid=document.getElementById('grid'); const modal=document.getElementById('modal');
+function render(list){grid.innerHTML=list.map((a,i)=>`<div class="card"><img src="${a.img}"><div class="cb"><h3>${a.t}</h3><span class="tag">${a.ep}</span><button class="btn" onclick="play(${animes.indexOf(a)})">▶ Watch Now</button></div></div>`).join('')}
+function play(i){document.getElementById('mTitle').innerText=animes[i].t;document.getElementById('player').src=animes[i].yt;modal.style.display='block'}
+function search(){let q=document.getElementById('search').value.toLowerCase();render(animes.filter(a=>a.t.toLowerCase().includes(q)))}
+render(animes);
+</script>
+</body></html>
