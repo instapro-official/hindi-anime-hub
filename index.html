@@ -1,114 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HINDI ANIME HUB</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:#0f0f0f;color:#fff}
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#000;position:sticky;top:0;z-index:10}
-.navbar h1{font-size:18px}
-.btn{padding:10px 16px;border:none;border-radius:8px;font-weight:700;cursor:pointer}
-.btn-red{background:#ff4155;color:#fff;width:100%;margin-top:10px}
-.admin-box{background:#1c1c1c;margin:16px;border-radius:16px;padding:16px;display:none}
-.admin-box.active{display:block}
-.admin-box input,.admin-box select{width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;background:#2a2a2a;color:#fff;outline:none}
-.file-box{background:#2a2a2a;padding:12px;border-radius:10px;margin-top:10px}
-.section{padding:16px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#1c1c1c;border-radius:12px;overflow:hidden;cursor:pointer}
-.card img{width:100%;height:190px;object-fit:cover;display:block}
-.card.info{padding:8px;font-size:14px}
-.tag{font-size:11px;color:#aaa}
-.modal{position:fixed;inset:0;background:#000;display:none;flex-direction:column;z-index:20}
-.modal.active{display:flex}
-.modal-top{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#000}
-.modal iframe{flex:1;width:100%;border:none;background:#000}
-.ok{color:#00ff88;font-size:13px;margin-top:6px}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#000;position:sticky;top:0}
+.btn{border:none;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer}
+.admin{background:#1c1c1c;margin:16px;padding:16px;border-radius:16px;display:none}
+.admin.show{display:block}
+.admin input,.admin select{width:100%;padding:12px;margin-top:10px;border-radius:10px;border:none;background:#2a2a2a;color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.card{background:#1c1c1c;border-radius:12px;overflow:hidden}
+.card img{width:100%;height:180px;object-fit:cover}
+.card b{padding:8px;display:block;font-size:14px}
+.modal{position:fixed;inset:0;background:#000;display:none;flex-direction:column;z-index:99}
+.modal.show{display:flex}
+.modal iframe{flex:1;border:none}
 </style>
 </head>
 <body>
-
-<div class="navbar">
-<h1>▶ HINDI ANIME HUB</h1>
-<button class="btn" style="background:#ff4155;color:#fff;padding:6px 14px" onclick="toggleAdmin()">Admin Panel</button>
+<div class="nav">
+<h3>▶ HINDI ANIME HUB</h3>
+<button class="btn" style="background:#ff4155;color:#fff" onclick="document.getElementById('admin').classList.toggle('show')">Admin Panel</button>
 </div>
 
-<div id="admin" class="admin-box">
+<div id="admin" class="admin">
 <h3>Boss Admin Control</h3>
-<input id="animeName" placeholder="Spy x family">
-<label style="font-size:13px;color:#aaa;margin-top:10px;display:block">Poster - Gallery se Select Karo (Expire Nahi Hoga)</label>
-<div class="file-box">
-<input type="file" id="posterFile" accept="image/*">
-<div id="photoOk" class="ok" style="display:none">✅ Photo Lock Ho Gaya!</div>
-</div>
-<input id="epTag" placeholder="Session 1 episode 1 hindi dubb">
-<input id="videoLink" placeholder="YouTube / Drive Link - https://youtu.be/...">
-<select id="cat">
-<option>Popular Today</option>
-<option>Latest Release</option>
-</select>
-<button class="btn btn-red" onclick="publishAnime()">Publish Anime</button>
-<button class="btn" style="background:#2a2a2a;color:#fff;width:100%;margin-top:8px" onclick="toggleAdmin()">Close</button>
+<input id="name" placeholder="Anime Name - Spy x family">
+<input type="file" id="file" accept="image/*" style="background:#2a2a2a;padding:12px;border-radius:10px;margin-top:10px;width:100%">
+<div id="ok" style="color:#00ff88;font-size:13px;display:none;margin-top:6px">✅ Photo Lock Ho Gaya!</div>
+<input id="ep" placeholder="Session 1 episode 1 hindi dubb">
+<input id="link" placeholder="YouTube Link - youtu.be/...">
+<button class="btn" style="background:#ff4155;color:#fff;width:100%;margin-top:12px" onclick="publish()">Publish Anime</button>
+<button class="btn" style="background:#333;color:#fff;width:100%;margin-top:8px" onclick="clearAll()">🗑️ Saare Purane Delete Karo</button>
 </div>
 
-<div class="section">
-<h3 id="popTitle">Popular Today</h3>
-<div id="grid" class="grid" style="margin-top:12px"></div>
+<div style="padding:16px">
+<h2>Popular Today</h2>
+<div id="grid" class="grid"></div>
 </div>
 
-<div id="playerModal" class="modal">
-<div class="modal-top">
-<span id="playerTitle">Spy x family</span>
-<span style="font-size:24px;cursor:pointer" onclick="closePlayer()">✕</span>
+<div id="player" class="modal">
+<div style="display:flex;justify-content:space-between;padding:12px;background:#000">
+<span id="ptitle"></span><span onclick="closeP()" style="font-size:24px">✕</span>
 </div>
-<iframe id="playerFrame" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+<iframe id="frame" allowfullscreen></iframe>
 </div>
 
 <script>
-let posterBase64 = "";
-let animeList = JSON.parse(localStorage.getItem("hindiAnimeFinal_v3") || "[]");
-
-document.getElementById("posterFile").addEventListener("change", function(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev){
-    posterBase64 = ev.target.result;
-    document.getElementById("photoOk").style.display="block";
-  };
-  reader.readAsDataURL(file);
+let base64="";
+let list=JSON.parse(localStorage.getItem("hindi_final_v5")||"[]");
+document.getElementById("file").addEventListener("change",e=>{
+  let f=e.target.files[0]; if(!f) return;
+  let r=new FileReader(); r.onload=ev=>{base64=ev.target.result; document.getElementById("ok").style.display="block";}; r.readAsDataURL(f);
 });
-
-function toggleAdmin(){
-  document.getElementById("admin").classList.toggle("active");
+function clearAll(){ if(confirm("Sab delete kare?")){ localStorage.removeItem("hindi_final_v5"); list=[]; render(); } }
+function toEmbed(u){
+  if(!u) return "";
+  let m=u.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if(m) return "https://www.youtube-nocookie.com/embed/"+m[1]+"?modestbranding=1&rel=0";
+  m=u.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if(m) return "https://www.youtube-nocookie.com/embed/"+m[1]+"?modestbranding=1&rel=0";
+  m=u.match(/embed\/([A-Za-z0-9_-]{11})/);
+  if(m) return "https://www.youtube-nocookie.com/embed/"+m[1]+"?modestbranding=1&rel=0";
+  return u;
 }
-
-function toEmbedUrl(url){
-  if(!url) return "";
-  url = url.trim();
-  let m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
-  if(m) return `https://www.youtube-nocookie.com/embed/${m[1]}?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0`;
-  m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
-  if(m) return `https://www.youtube-nocookie.com/embed/${m[1]}?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0`;
-  m = url.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{11})/);
-  if(m) return `https://www.youtube-nocookie.com/embed/${m[1]}?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0`;
-  if(url.includes("drive.google.com")){
-    let dm = url.match(/\/d\/([A-Za-z0-9_-]+)/);
-    if(dm) return `https://drive.google.com/file/d/${dm[1]}/preview`;
-  }
-  return url;
+function publish(){
+  let n=document.getElementById("name").value.trim();
+  let e=document.getElementById("ep").value.trim();
+  let l=document.getElementById("link").value.trim();
+  if(!n||!base64||!l){alert("Naam Photo Link bharo");return;}
+  list.unshift({id:Date.now(),name:n,ep:e,poster:base64,link:l});
+  localStorage.setItem("hindi_final_v5",JSON.stringify(list));
+  render(); document.getElementById("admin").classList.remove("show");
+  document.getElementById("name").value=""; document.getElementById("ep").value=""; document.getElementById("link").value=""; base64=""; document.getElementById("ok").style.display="none";
 }
-
-function publishAnime(){
-  const name = document.getElementById("animeName").value.trim();
-  const ep = document.getElementById("epTag").value.trim();
-  const link = document.getElementById("videoLink").value.trim();
-  if(!name ||!posterBase64 ||!link){ alert("Naam, Photo, Link teeno bharo"); return; }
-  const item = {id: Date.now(), name, ep, poster: posterBase64, link, cat: document.getElementById("cat").value};
-  animeList.unshift(item);
-  localStorage.setItem("hindiAnimeFinal_v3", JSON.stringify(animeList));
-  render();
-  toggleAdmin();
-  //
+function render(){
+  let g=document.getElementById("grid"); g.innerHTML="";
+  list.forEach(a=>{
+    let d=document.createElement("div"); d.className="card";
+    d.innerHTML=`<img src="${a.poster}"><b>${a.name}<br><span style="font-size:11px;color:#aaa">${a.ep}</span></b>`;
+    d.onclick=()=>{document.getElementById("ptitle").innerText=a.name; document.getElementById("frame").src=toEmbed(a.link); document.getElementById("player").classList.add("show");};
+    g.appendChild(d);
+  });
+}
+function closeP(){document.getElementById("player").classList.remove("show"); document.getElementById("frame").src="";}
+render();
+</script>
+</body>
+</html>
