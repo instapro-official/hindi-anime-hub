@@ -3,38 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoro TV Clone</title>
-    <!-- Font Awesome Icons ke liye -->
+    <title>Hindi Anime Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Header Navigation -->
+    <!-- Header Navbar -->
     <header class="navbar">
         <div class="nav-left">
             <i class="fa-solid fa-bars menu-icon"></i>
             <div class="logo">
-                <i class="fa-solid fa-skull-crossbones"></i> ZORO
+                <i class="fa-solid fa-play"></i> HINDI ANIME HUB
             </div>
         </div>
         <div class="nav-right">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <button id="adminLoginBtn" class="btn-toggle"><i class="fa-solid fa-lock"></i> Admin Panel</button>
         </div>
     </header>
 
-    <!-- Admin Form (Nayi Anime Post Upload Karne Ke Liye) -->
-    <section class="admin-panel">
-        <button id="toggleFormBtn" class="btn-toggle">+ Nayi Anime Post Karein</button>
-        <form id="animeForm" class="hidden">
-            <h3>Add Anime Post</h3>
-            <input type="text" id="animeTitle" placeholder="Anime Title (e.g. One Piece)" required>
-            <input type="text" id="animeImg" placeholder="Image URL (Poster Link)" required>
-            <input type="text" id="animeEp" placeholder="Episode Tag (e.g. Ep 1177)" required>
+    <!-- Secure Admin Panel -->
+    <section id="adminSection" class="admin-panel hidden">
+        <div class="admin-header">
+            <h3><i class="fa-solid fa-user-shield"></i> Boss Admin Control</h3>
+            <button id="logoutBtn" class="btn-logout">Logout</button>
+        </div>
+        
+        <form id="animeForm">
+            <input type="text" id="animeTitle" placeholder="Anime Name (e.g. Demon Slayer)" required>
+            <input type="text" id="animeImg" placeholder="Poster Image URL" required>
+            <input type="text" id="animeEp" placeholder="Episode Tag (e.g. Ep 55 Hindi)" required>
+            <input type="text" id="telegramLink" placeholder="Telegram Post Link" required>
             <select id="animeType">
                 <option value="TV">TV</option>
                 <option value="MOVIE">MOVIE</option>
-                <option value="OVA">OVA</option>
             </select>
             <select id="category">
                 <option value="popular">Popular Today</option>
@@ -44,23 +46,19 @@
         </form>
     </section>
 
-    <!-- Section 1: Popular Today (Horizontal Scroll) -->
+    <!-- Popular Today Section -->
     <section class="section-container">
         <h2 class="section-title">Popular Today</h2>
-        <div class="horizontal-scroll" id="popularContainer">
-            <!-- Popular Anime Cards Dynamic Aayenge -->
-        </div>
+        <div class="horizontal-scroll" id="popularContainer"></div>
     </section>
 
-    <!-- Section 2: Latest Release (Grid Layout) -->
+    <!-- Latest Release Section -->
     <section class="section-container">
         <div class="section-header">
             <h2 class="section-title">Latest Release</h2>
             <a href="#" class="view-all">VIEW ALL</a>
         </div>
-        <div class="grid-container" id="latestContainer">
-            <!-- Latest Anime Cards Dynamic Aayenge -->
-        </div>
+        <div class="grid-container" id="latestContainer"></div>
     </section>
 
     <script src="script.js"></script>
