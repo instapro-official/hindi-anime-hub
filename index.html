@@ -1,22 +1,68 @@
 <!DOCTYPE html>
-<html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hindi Anime Hub - Official</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#0a0a0f;color:#fff}header{padding:12px 15px;background:#111122;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:99}.logo{font-weight:900;font-size:20px;color:#ff2e63;flex-shrink:0}.logo span{color:#fff}.search{flex:1;padding:10px 14px;border-radius:25px;border:none;background:#1e1e36;color:#fff;outline:none}.hero{padding:35px 15px;background:linear-gradient(90deg,#ff2e63,#7c3aed);text-align:center}.hero h1{font-size:26px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}.card{background:#151528;border-radius:14px;overflow:hidden;border:1px solid #222}.card img{width:100%;height:200px;object-fit:cover}.cb{padding:10px}.cb h3{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tag{display:inline-block;margin-top:6px;font-size:10px;background:#ff2e63;padding:3px 7px;border-radius:20px}.btn{width:100%;margin-top:8px;padding:9px;border:none;border-radius:10px;background:#6d5df6;color:#fff;font-weight:700}.modal{display:none;position:fixed;inset:0;background:#000000ee;z-index:999;padding:15px}.modal-box{background:#1a1a2e;border-radius:16px;padding:15px;max-width:500px;margin:40px auto}.close{float:right;font-size:24px;cursor:pointer} iframe{width:100%;height:220px;border-radius:10px;border:none;background:#000;margin-top:10px}</style></head><body>
-<header><div class="logo">HINDI<span>ANIMEHUB</span></div><input class="search" id="search" placeholder="Search Naruto, Demon Slayer..." oninput="search()"></header>
-<div class="hero"><h1>Anime Dekho Hindi Me 🇮🇳</h1><p>100% Hindi Dubbed - Daily Update</p></div>
-<div class="grid" id="grid"></div>
-<div class="modal" id="modal"><div class="modal-box"><span class="close" onclick="modal.style.display='none'">✕</span><h2 id="mTitle"></h2><p style="color:#aaa;font-size:12px;margin-top:5px">Hindi Dubbed • HD • No Ads</p><iframe id="player" allowfullscreen></iframe><button class="btn" style="background:#ff2e63" onclick="alert('Telegram pe full episodes hai! Link bio me')">📥 Download in Hindi</button><p style="text-align:center;color:#777;font-size:11px;margin-top:10px">Made by Bishal</p></div></div>
-<script>
-const animes=[
-{t:"Naruto - Hindi Dub",ep:"220 EP",img:"https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500",yt:"https://www.youtube.com/embed/QczGoCmX-pI"},
-{t:"Demon Slayer Hindi",ep:"55 EP",img:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500",yt:"https://www.youtube.com/embed/x7uL2GblIo0"},
-{t:"One Piece Hindi",ep:"NEW",img:"https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=500",yt:"https://www.youtube.com/embed/S8_YwFLCh4U"},
-{t:"Attack on Titan Hindi",ep:"HINDI",img:"https://images.unsplash.com/photo-1578632292335-df3abbb0d586?w=500",yt:"https://www.youtube.com/embed/MGRm4IzK1SQ"},
-{t:"Jujutsu Kaisen Hindi",ep:"48 EP",img:"https://images.unsplash.com/photo-1608346128025-1896b97a6fa7?w=500",yt:"https://www.youtube.com/embed/pkKu9hLT-t8"},
-{t:"Dragon Ball Z Hindi",ep:"100 EP",img:"https://images.unsplash.com/photo-1601850494422-3cf14624b0b3?w=500",yt:"https://www.youtube.com/embed/sxufB6xAQfk"}
-];
-const grid=document.getElementById('grid'); const modal=document.getElementById('modal');
-function render(list){grid.innerHTML=list.map((a,i)=>`<div class="card"><img src="${a.img}"><div class="cb"><h3>${a.t}</h3><span class="tag">${a.ep}</span><button class="btn" onclick="play(${animes.indexOf(a)})">▶ Watch Now</button></div></div>`).join('')}
-function play(i){document.getElementById('mTitle').innerText=animes[i].t;document.getElementById('player').src=animes[i].yt;modal.style.display='block'}
-function search(){let q=document.getElementById('search').value.toLowerCase();render(animes.filter(a=>a.t.toLowerCase().includes(q)))}
-render(animes);
-</script>
-</body></html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoro TV Clone</title>
+    <!-- Font Awesome Icons ke liye -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars menu-icon"></i>
+            <div class="logo">
+                <i class="fa-solid fa-skull-crossbones"></i> ZORO
+            </div>
+        </div>
+        <div class="nav-right">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        </div>
+    </header>
+
+    <!-- Admin Form (Nayi Anime Post Upload Karne Ke Liye) -->
+    <section class="admin-panel">
+        <button id="toggleFormBtn" class="btn-toggle">+ Nayi Anime Post Karein</button>
+        <form id="animeForm" class="hidden">
+            <h3>Add Anime Post</h3>
+            <input type="text" id="animeTitle" placeholder="Anime Title (e.g. One Piece)" required>
+            <input type="text" id="animeImg" placeholder="Image URL (Poster Link)" required>
+            <input type="text" id="animeEp" placeholder="Episode Tag (e.g. Ep 1177)" required>
+            <select id="animeType">
+                <option value="TV">TV</option>
+                <option value="MOVIE">MOVIE</option>
+                <option value="OVA">OVA</option>
+            </select>
+            <select id="category">
+                <option value="popular">Popular Today</option>
+                <option value="latest">Latest Release</option>
+            </select>
+            <button type="submit" class="btn-submit">Publish Anime</button>
+        </form>
+    </section>
+
+    <!-- Section 1: Popular Today (Horizontal Scroll) -->
+    <section class="section-container">
+        <h2 class="section-title">Popular Today</h2>
+        <div class="horizontal-scroll" id="popularContainer">
+            <!-- Popular Anime Cards Dynamic Aayenge -->
+        </div>
+    </section>
+
+    <!-- Section 2: Latest Release (Grid Layout) -->
+    <section class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">Latest Release</h2>
+            <a href="#" class="view-all">VIEW ALL</a>
+        </div>
+        <div class="grid-container" id="latestContainer">
+            <!-- Latest Anime Cards Dynamic Aayenge -->
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
