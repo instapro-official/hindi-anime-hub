@@ -1,101 +1,50 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HINDI ANIME HUB - CLEAN</title>
-<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiSElOREkgQU5JTUUgSFVCIiwic2hvcnRfbmFtZSI6IkhpbmRpQW5pbWUiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzEyMTIxMiIsInRoZW1lX2NvbG9yIjoiI2ZmNDE1NSJ9">
-<meta name="theme-color" content="#ff4155">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#121212;color:#fff}
-.top{background:#202020;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;position:sticky;top:0;z-index:10}
-.postBtn{margin:14px 16px;background:#ffb7d5;color:#000;border:none;padding:12px 18px;border-radius:8px;font-weight:800;cursor:pointer}
-.admin{background:#1e1e1e;margin:0 16px 16px;padding:16px;border-radius:12px;display:none}
-.admin.show{display:block}
-.admin input{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none;background:#2a2a2a;color:#fff;outline:none}
-.section{padding:16px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#1e1e1e;border-radius:10px;overflow:hidden;position:relative;cursor:pointer}
-.card img{width:100%;height:210px;object-fit:cover;display:block}
-.badgeTV{position:absolute;top:6px;right:6px;background:#0ea5e9;color:#fff;font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700}
-.badgeEp{position:absolute;bottom:38px;left:6px;background:#0ea5e9;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;font-weight:700}
-.delBtn{position:absolute;top:6px;left:6px;background:#ff4155;color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;font-weight:800;z-index:5}
-.cardTitle{padding:8px;font-size:14px}
-.modal{position:fixed;inset:0;background:#000;display:none;flex-direction:column;z-index:99}
-.modal.show{display:flex}
-.player-wrap{flex:1;display:flex;flex-direction:column;background:#000}
-.player-wrap video{width:100%;flex:1;background:#000}
-.dlBtn{background:#ff4155;color:#fff;text-align:center;padding:15px;font-weight:800;text-decoration:none}
-</style>
-</head>
+<html><head><meta name="viewport" content="width=device-width">
+<title>Admin Panel</title>
+<style>body{background:#111;color:#fff;padding:20px;font-family:Arial}
+input{width:100%;padding:10px;margin:8px 0;background:#222;color:#fff;border:none;border-radius:8px}
+button{background:#ff006a;color:#fff;padding:12px;width:100%;border:none;border-radius:10px;font-weight:700}
+#preview img{width:150px;border-radius:10px;margin-top:10px}
+</style></head>
 <body>
-<div class="top"><div style="display:flex;gap:12px;align-items:center"><span>☰</span><h2>☠️ ZORO</h2></div><span>🔍</span></div>
-<button class="postBtn" onclick="document.getElementById('admin').classList.toggle('show')">+ Nayi Anime Post Karein</button>
-<div id="admin" class="admin">
-<input id="name" placeholder="Anime Name - ex: 7th Time Loop">
-<input type="file" id="file" accept="image/*">
-<div id="ok" style="color:#00ff88;font-size:12px;display:none;margin-top:5px">✅ Photo Lock</div>
-<input id="ep" placeholder="Episode No - ex: 01">
-<input id="link" placeholder="Video Link - https://files.catbox.moe/....mp4">
-<div style="font-size:11px;color:#aaa;margin-top:6px">Catbox wala.mp4 link daalo - No Logo aayega</div>
-<button style="width:100%;margin-top:12px;background:#ff4155;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700" onclick="publish()">Publish</button>
-</div>
-
-<div class="section"><h2>Popular Today</h2><div id="popular" class="grid2" style="margin-top:12px"></div></div>
-
-<div id="player" class="modal">
-<div style="display:flex;justify-content:space-between;padding:12px;background:#111;align-items:center"><span id="ptitle"></span><span onclick="closeP()" style="font-size:28px;cursor:pointer">✕</span></div>
-<div class="player-wrap" id="pWrap"></div>
-</div>
+<h2>🔥 Admin - Nayi Anime Add Karo</h2>
+<input id="title" placeholder="Anime ka Naam">
+<input type="file" id="photo" accept="image/*">
+<div id="preview"></div>
+<input id="episode" placeholder="EP 1 Hindi">
+<input id="video" placeholder="YouTube / Drive Video Link">
+<textarea id="output" style="width:100%;height:150px;margin-top:15px;background:#222;color:#0f0;border:none"></textarea>
+<button onclick="copyJSON()">Copy Karo</button>
 
 <script>
-let base64="";
-let list=JSON.parse(localStorage.getItem("hindi_final_clean_v1")||"[]");
-
-document.getElementById("file").addEventListener("change",e=>{
-  let r=new FileReader();
-  r.onload=ev=>{base64=ev.target.result; document.getElementById("ok").style.display="block";};
-  r.readAsDataURL(e.target.files[0]);
+let finalImage = "";
+document.getElementById('photo').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    finalImage = reader.result;
+    document.getElementById('preview').innerHTML = `<img src="${finalImage}"><p style="color:lightgreen">✅ Gallery Photo Ready!</p>`;
+    makeJSON();
+  };
+  reader.readAsDataURL(file);
 });
 
-function publish(){
-  let n=document.getElementById("name").value.trim(),
-      e=document.getElementById("ep").value.trim(),
-      l=document.getElementById("link").value.trim();
-  if(!n||!base64||!l){alert("Name, Photo, Video Link bharo");return;}
-  list.unshift({id:Date.now(),name:n,ep:e,poster:base64,link:l});
-  localStorage.setItem("hindi_final_clean_v1",JSON.stringify(list));
-  render();
-  document.getElementById("admin").classList.remove("show");
-  document.getElementById("name").value=""; document.getElementById("ep").value=""; document.getElementById("link").value=""; base64=""; document.getElementById("ok").style.display="none";
+function makeJSON(){
+  const j = {
+    title: document.getElementById('title').value || "New Anime",
+    image: finalImage,
+    episode: document.getElementById('episode').value || "EP 1 Hindi",
+    video: document.getElementById('video').value || ""
+  };
+  document.getElementById('output').value = JSON.stringify(j, null, 2) + ",";
 }
 
-function render(){
-  let popular=document.getElementById("popular");
-  popular.innerHTML="";
-  list.forEach(a=>{
-    let d=document.createElement("div"); d.className="card";
-    d.innerHTML=`<span class="delBtn" onclick="deleteEp(${a.id}, event)">🗑️ DELETE</span><span class="badgeTV">TV</span><img src="${a.poster}"><span class="badgeEp">Ep ${a.ep}</span><div class="cardTitle">${a.name}</div>`;
-    d.onclick=()=>{
-      document.getElementById("ptitle").innerText=a.name;
-      let w=document.getElementById("pWrap");
-      w.innerHTML=`<video src="${a.link}" controls autoplay playsinline></video><a class="dlBtn" href="${a.link}" download>⬇ DOWNLOAD VIDEO</a>`;
-      document.getElementById("player").classList.add("show");
-    };
-    popular.appendChild(d);
-  });
-}
+document.querySelectorAll('input').forEach(i=> i.addEventListener('input', makeJSON));
 
-function deleteEp(id, event){
-  event.stopPropagation();
-  if(confirm("Delete karna hai?")){
-    list = list.filter(x=>x.id!==id);
-    localStorage.setItem("hindi_final_clean_v1", JSON.stringify(list));
-    render();
-  }
+function copyJSON(){
+  document.getElementById('output').select();
+  document.execCommand('copy');
+  alert("Copied! Ab animes.json me paste karke Commit karo");
 }
-function closeP(){document.getElementById("player").classList.remove("show"); document.getElementById("pWrap").innerHTML="";}
-render();
 </script>
-</body>
-</html>
+</body></html>
