@@ -1,25 +1,5 @@
-let defaultAnimes = [
-    {
-        id: 1,
-        title: "Demon Slayer",
-        img: "https://m.media-amazon.com/images/M/MV5BZjZjNzI5MDctY2JiNi00MGVmLTlhMGYtM2FiMmE4MDdhZmKcXkEyXkFqcGdeQXVyNjc3OTE4Nzg@._V1_.jpg",
-        ep: "Ep 55 Hindi",
-        telegram: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Sample video player link
-        type: "TV",
-        category: "popular"
-    },
-    {
-        id: 2,
-        title: "One Piece",
-        img: "https://m.media-amazon.com/images/M/MV5BMTNjNGU4NTUtY2VmMy00Mjk4LWJiM2UtM2IxOTA3ZmVlN2IxXkEyXkFqcGdeQXVyMTEzMTI1Mjk3._V1_.jpg",
-        ep: "Ep 1177",
-        telegram: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        type: "TV",
-        category: "latest"
-    }
-];
-
-let animeData = JSON.parse(localStorage.getItem('animeHubData')) || defaultAnimes;
+let defaultAnimes = [];
+let animeData = [];
 let isAdminLoggedIn = false;
 
 const adminLoginBtn = document.getElementById('adminLoginBtn');
@@ -27,103 +7,125 @@ const logoutBtn = document.getElementById('logoutBtn');
 const adminSection = document.getElementById('adminSection');
 const animeForm = document.getElementById('animeForm');
 
-adminLoginBtn.addEventListener('click', () => {
-    if (!isAdminLoggedIn) {
-        const password = prompt("Enter Admin Password:");
-        if (password === "admin123") {
-            isAdminLoggedIn = true;
-            adminSection.classList.remove('hidden');
-            renderAnime();
-        } else {
-            alert("Wrong Password!");
-        }
-    }
-});
+// 50 anime load - permanent wala
+async function loadAnimes(){
+  try{
+    let r = await fetch('animes.json?v='+Date.now());
+    defaultAnimes = await r.json();
+    // local + permanent merge
+    let local = JSON.parse(localStorage.getItem('animeHubData')) || [];
+    // agar local me extra hai to jod do
+    let ids = new Set(defaultAnimes.map(a=>a.id));
+    local.forEach(l=>{ if(!ids.has(l.id)) defaultAnimes.unshift(l); });
+    animeData = defaultAnimes;
+  }catch(e){
+    animeData = JSON.parse(localStorage.getItem('animeHubData')) || [];
+  }
+  renderAnime();
+}
 
-logoutBtn.addEventListener('click', () => {
-    isAdminLoggedIn = false;
-    adminSection.classList.add('hidden');
-    renderAnime();
-});
+document.addEventListener("DOMContentLoaded", loadAnimes);
 
-animeForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const newAnime = {
-        id: Date.now(),
-        title: document.getElementById('animeTitle').value,
-        img: document.getElementById('animeImg').value,
-        ep: document.getElementById('animeEp').value,
-        telegram: document.getElementById('telegramLink').value,
-        type: document.getElementById('animeType').value,
-        category: document.getElementById('category').value
+function renderAnime(filter=""){
+  let grid = document.getElementById("popular") || document.getElementById("animeGrid");
+  if(!grid) return;
+  grid.innerHTML="";
+  let list = animeData.filter(a=> (a.title||a.name).toLowerCase().includes(filter.toLowerCase()));
+  
+  list.forEach(a=>{
+    let title = a.title || a.name;
+    let img = a.img || a.poster;
+    let ep = a.ep;
+    let d = document.createElement("div");
+    d.className="card";
+    d.style.position="relative";
+    d.innerHTML=`<img src="${img}" style="width:100%;height:200px;object-fit:cover;border-radius:10px"><span class="badge" style="position:absolute;top:5px;left:5px;background:orange;color:white;padding:2px 6px;border-radius:5px">Ep ${ep}</span><div class="title" style="padding:5px;font-weight:bold">${title}</div>${isAdminLoggedIn?`<button class="delBtn" style="position:absolute;top:2px;right:2px;background:red;color:white;border:none;border-radius:50%;width:22px;height:22px">X</button>`:''}`;
+    
+    d.onclick=()=>{
+      let link = a.telegram || a.link;
+      document.getElementById("ptitle").innerText=title;
+      document.getElementById("pWrap").innerHTML=`<video src="${link}" controls autoplay playsinline style="width:100%;height:100%;background:black"></video>`;
+      document.getElementById("player").classList.add("show");
     };
+    
+    if(isAdminLoggedIn){
+      let btn = d.querySelector('.delBtn');
+      if(btn) btn.addEventListener('click',(e)=>{e.stopPropagation(); deleteAnime(a.id);});
+    }
+    grid.appendChild(d);
+  });
+}
 
-    animeData.unshift(newAnime);
-    localStorage.setItem('animeHubData', JSON.stringify(animeData));
-    renderAnime();
-    animeForm.reset();
-});
+function closeP(){document.getElementById("player").classList.remove("show");document.getElementById("pWrap").innerHTML="";}
+
+// Search
+let searchBox = document.getElementById("searchBox");
+if(searchBox){
+  searchBox.addEventListener("input",e=>renderAnime(e.target.value));
+}
+function toggleSearch(){
+  let s=document.getElementById("searchBox");
+  s.style.display=s.style.display==="none"?"block":"none";
+  if(s.style.display==="block") s.focus();
+}
+
+// Admin Login
+if(adminLoginBtn){
+ adminLoginBtn.addEventListener('click', () => {
+  if (!isAdminLoggedIn) {
+    const password = prompt("Enter Admin Password:");
+    if (password === "admin123") {
+      isAdminLoggedIn = true;
+      adminSection.classList.remove('hidden');
+      renderAnime();
+      alert("Login OK - Delete X dikhega");
+    } else {
+      alert("Wrong Password!");
+    }
+  }
+ });
+}
+
+if(logoutBtn){
+ logoutBtn.addEventListener('click', () => {
+  isAdminLoggedIn = false;
+  adminSection.classList.add('hidden');
+  renderAnime();
+ });
+}
+
+// Add new anime - permanent wala
+if(animeForm){
+ animeForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const newAnime = {
+    id: Date.now(),
+    title: document.getElementById('animeTitle').value,
+    img: document.getElementById('animeImg').value,
+    ep: document.getElementById('animeEp').value,
+    telegram: document.getElementById('telegramLink').value,
+    type: document.getElementById('animeType').value,
+    category: document.getElementById('category').value,
+    name: document.getElementById('animeTitle').value,
+    poster: document.getElementById('animeImg').value,
+    link: document.getElementById('telegramLink').value
+  };
+  animeData.unshift(newAnime);
+  localStorage.setItem('animeHubData', JSON.stringify(animeData));
+  renderAnime();
+  animeForm.reset();
+  
+  // permanent ke liye code dega
+  let code = `  {"id":${newAnime.id},"name":"${newAnime.title}","ep":"${newAnime.ep}","poster":"${newAnime.img}","link":"${newAnime.telegram}"},`;
+  prompt("Ye copy karke animes.json me paste karo - fir sabko dikhega, kabhi gayab nahi hoga:", code);
+ });
+}
 
 function deleteAnime(id) {
-    if (confirm("Delete this anime?")) {
-        animeData = animeData.filter(anime => anime.id !== id);
-        localStorage.setItem('animeHubData', JSON.stringify(animeData));
-        renderAnime();
-    }
+  if (confirm("Delete this anime?")) {
+    animeData = animeData.filter(anime => anime.id !== id);
+    localStorage.setItem('animeHubData', JSON.stringify(animeData));
+    renderAnime();
+    alert("Local se delete ho gaya. Permanent delete ke liye animes.json se bhi ID "+id+" wala line delete karke Commit karo.");
+  }
 }
-
-function openPlayer(url, title) {
-    const modal = document.getElementById('videoModal');
-    const player = document.getElementById('videoPlayer');
-    const playerTitle = document.getElementById('playerTitle');
-
-    playerTitle.textContent = title;
-    player.src = url;
-    modal.style.display = 'flex';
-}
-
-function closePlayer() {
-    const modal = document.getElementById('videoModal');
-    const player = document.getElementById('videoPlayer');
-
-    player.src = '';
-    modal.style.display = 'none';
-}
-
-function renderAnime() {
-    const popularContainer = document.getElementById('popularContainer');
-    const latestContainer = document.getElementById('latestContainer');
-
-    popularContainer.innerHTML = '';
-    latestContainer.innerHTML = '';
-
-    animeData.forEach(anime => {
-        const card = document.createElement('div');
-        card.className = 'anime-card';
-
-        let deleteBtnHTML = isAdminLoggedIn 
-            ? `<button class="btn-delete" onclick="event.stopPropagation(); deleteAnime(${anime.id})"><i class="fa-solid fa-trash"></i> Delete</button>` 
-            : '';
-
-        card.innerHTML = `
-            <span class="badge-tv">${anime.type}</span>
-            <img src="${anime.img}" alt="${anime.title}">
-            <span class="badge-ep">${anime.ep}</span>
-            <div class="anime-title">${anime.title}</div>
-            ${deleteBtnHTML}
-        `;
-
-        card.addEventListener('click', () => {
-            openPlayer(anime.telegram, anime.title);
-        });
-
-        if (anime.category === 'popular') {
-            popularContainer.appendChild(card);
-        } else {
-            latestContainer.appendChild(card);
-        }
-    });
-}
-
-renderAnime();
